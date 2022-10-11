@@ -14,15 +14,15 @@ import logging
 
 # global variables
 my_config = {
-    "input": "",
-    "number": 0,
-    "model": "",
-    "resolution": "",
-    "scale": 0,
-    "sampler": "",
-    "steps": 0,
+    "input": "masterpiece,",
+    "number": 3,
+    "model": "NAI Diffusion Anime (Curated)",
+    "resolution": "Portrait (Normal): 512x768",
+    "scale": 12,
+    "sampler": "k_euler_ancestral",
+    "steps": 28,
     "ucPreset": 0,
-    "uc": ""
+    "uc": "lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry"
 }
 resolutions = ["Portrait (Normal): 512x768",
                "Landscape (Normal): 768x512",
@@ -37,11 +37,11 @@ models = {
 }
 samplers = ['k_euler_ancestral', 'k_euler', 'k_lms', 'plms', 'ddim']
 URL = "https://api.novelai.net/ai/generate-image"
-key = ""
+key = "Put your key here"
 save_path = "download\\"
 
 
-def gui(access_key):
+def gui():
     def save():
         global key, my_config
         try:
@@ -166,6 +166,7 @@ def gui(access_key):
     with open('settings.json') as f:
         config = json.load(f)
 
+    global key
     window = tk.Tk()
     window.title('NovelAI Image Piliang Spawner')
 
@@ -228,7 +229,7 @@ def gui(access_key):
 
     tk.Label(frames[2], text="認證金鑰", width=10).grid(column=2, row=3)
     key_entry = tk.Entry(frames[2], width=25)
-    key_entry.insert(0, access_key)
+    key_entry.insert(0, key)
     key_entry.grid(column=3, row=3)
 
     tk.Button(frames[3], text="儲存設定", width=10,
@@ -247,9 +248,12 @@ def gui(access_key):
 
 if __name__ == "__main__":
     try:
-        with open('key.json', 'r', encoding='UTF-8') as f:
-            key = json.load(f)['key']
-
+        if not os.path.exists('key.json'):
+            with open('key.json', 'w', encoding='UTF-8') as f:
+                json.dump({"key": key}, f, indent=4)
+        if not os.path.exists('settings.json'):
+            with open('settings.json', 'w', encoding='UTF-8') as f:
+                json.dump(my_config, f, indent=4)
         if not os.path.isdir('download'):
             os.mkdir('download')
 
@@ -262,8 +266,7 @@ if __name__ == "__main__":
 
     except Exception as e:
         logging.exception(e)
-        key = ""
 
-    gui(key)
+    gui()
 
     logging.info("Leave app.")
