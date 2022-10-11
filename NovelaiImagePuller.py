@@ -38,7 +38,7 @@ models = {
 samplers = ['k_euler_ancestral', 'k_euler', 'k_lms', 'plms', 'ddim']
 URL = "https://api.novelai.net/ai/generate-image"
 key = "Put your key here"
-save_path = "download\\"
+global_save_path = "download\\"
 
 
 def gui():
@@ -66,10 +66,9 @@ def gui():
         except Exception as e:
             logging.exception(e)
             progress.config(text="錯誤發生。儲存失敗。")
-            return None
 
-    def process(n):
-        global key, my_config, save_path
+    def process(n, p_config):
+        global key, global_save_path
         if not key:
             progress.config(text="沒有驗證金鑰。下載失敗。")
             logging.warning("No key detected. Please check your key.json.")
@@ -86,26 +85,27 @@ def gui():
                 "referer": "https://novelai.net/"
             }
 
-            resol_list = resol_var.get().split()[-1].split("x")
+            resol_list = p_config["resolution"].split()[-1].split("x")
 
             my_data = {
-                "input": my_config['input'],
-                "model": models[my_config['model']],
+                "input": p_config['input'],
+                "model": models[p_config['model']],
                 "parameters": {
                     "width": int(resol_list[0]),
                     "height": int(resol_list[1]),
-                    "scale": my_config['scale'],
-                    "sampler": my_config['sampler'],
-                    "steps": my_config['steps'],
+                    "scale": p_config['scale'],
+                    "sampler": p_config['sampler'],
+                    "steps": p_config['steps'],
                     "n_samples": 1,
                     "ucPreset": 0,
-                    "uc": my_config['uc']
+                    "uc": p_config['uc']
                 }
             }
 
             # make dir
             current_time = datetime.now().strftime('%Y-%m-%d %H-%M-%S')
-            save_path = "download\\%s\\" % current_time
+            global_save_path = "download\\%s\\" % current_time
+            save_path = global_save_path
             if not os.path.isdir(save_path):
                 os.mkdir(save_path)
             shutil.copy('settings.json', save_path + 'settings.json')
@@ -140,14 +140,15 @@ def gui():
             progress.config(text="錯誤發生。下載失敗。")
 
     def download(num):
+        global my_config
         save()
-        process(num)
+        process(num, my_config)
 
     def input_clear(textblock):
         textblock.delete(1.0, tk.END)
 
     def open_folder():
-        os.startfile(os.path.realpath(save_path))
+        os.startfile(os.path.realpath(global_save_path))
 
     def check_num(var, lower, upper):
         try:
@@ -235,7 +236,7 @@ def gui():
               command=save).pack(side=tk.LEFT)
     tk.Button(frames[3], text="產生圖片", width=10,
               command=lambda: threading.Thread(target=lambda: download(
-                  num=int(num_entry.get()))).start()).pack(side=tk.LEFT)
+                  int(num_entry.get()))).start()).pack(side=tk.LEFT)
     tk.Button(frames[3], text="開啟圖片", width=10,
               command=open_folder).pack(side=tk.LEFT)
     progress = tk.Label(frames[3], text='', width=60, anchor='w')
