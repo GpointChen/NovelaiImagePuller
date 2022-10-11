@@ -13,4 +13,6 @@ The key starts with "Bearer". You can get it on the browser by something like Ch
 
 All your settings will be saved automatically when you start requesting images, and your images will be downloaded into `download\` folder.
 
+If you mess up your settings, you can delete `settings.json` and it will be re-generated when launch the app.
+
 You can check the log in `nips.log`.
