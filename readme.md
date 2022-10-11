@@ -11,6 +11,6 @@ Before start downloading, you may need to fill in the key in `key.json` like bel
 
 The key starts with "Bearer". You can get it on the browser by something like Chrome Dev Tool.
 
-All your settings will be saved automatically when you start requesting images.
+All your settings will be saved automatically when you start requesting images, and your images will be downloaded into `download\` folder.
 
 You can check the log in `nips.log`.
