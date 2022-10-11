@@ -221,7 +221,7 @@ def gui(access_key):
                   num=int(num_entry.get()))).start()).pack(side=tk.LEFT)
     tk.Button(frames[3], text="開啟圖片", width=10,
               command=open_folder).pack(side=tk.LEFT)
-    progress = tk.Label(frames[3], text='')
+    progress = tk.Label(frames[3], text='', width=50, anchor='w')
     progress.pack(side=tk.LEFT)
 
     window.eval('tk::PlaceWindow . center')
