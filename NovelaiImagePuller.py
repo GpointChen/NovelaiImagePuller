@@ -9,6 +9,7 @@ import json
 import os
 import shutil
 import threading
+import logging
 
 
 # global variables
@@ -61,7 +62,7 @@ def gui(access_key):
                 json.dump({"key": key}, f, indent=4)
 
         except Exception as e:
-            print(e)
+            logging.exception(e)
             progress.config(text="錯誤發生。儲存失敗。")
             return None
 
@@ -69,36 +70,37 @@ def gui(access_key):
         global key, my_config
         if not key:
             progress.config(text="沒有驗證金鑰。下載失敗。")
+            logging.warning("No key detected. Please check your key.json.")
             return None
 
-        my_headers = {
-            "Content-Type": "application/json",
-            "authorization": key,
-            "authority": "api.novelai.net",
-            "accept": "/",
-            "content-type": "application/json",
-            "origin": "https://novelai.net/",
-            "referer": "https://novelai.net/"
-        }
-
-        resol_list = resol_var.get().split()[-1].split("x")
-
-        my_data = {
-            "input": my_config['input'],
-            "model": models[my_config['model']],
-            "parameters": {
-                "width": int(resol_list[0]),
-                "height": int(resol_list[1]),
-                "scale": my_config['scale'],
-                "sampler": my_config['sampler'],
-                "steps": my_config['steps'],
-                "n_samples": 1,
-                "ucPreset": 0,
-                "uc": my_config['uc']
-            }
-        }
-
         try:
+            my_headers = {
+                "Content-Type": "application/json",
+                "authorization": key,
+                "authority": "api.novelai.net",
+                "accept": "/",
+                "content-type": "application/json",
+                "origin": "https://novelai.net/",
+                "referer": "https://novelai.net/"
+            }
+
+            resol_list = resol_var.get().split()[-1].split("x")
+
+            my_data = {
+                "input": my_config['input'],
+                "model": models[my_config['model']],
+                "parameters": {
+                    "width": int(resol_list[0]),
+                    "height": int(resol_list[1]),
+                    "scale": my_config['scale'],
+                    "sampler": my_config['sampler'],
+                    "steps": my_config['steps'],
+                    "n_samples": 1,
+                    "ucPreset": 0,
+                    "uc": my_config['uc']
+                }
+            }
+
             # make dir
             current_time = datetime.now().strftime('%Y-%m-%d %H-%M-%S')
             save_path = "download\\%s\\" % current_time
@@ -106,17 +108,19 @@ def gui(access_key):
                 os.mkdir(save_path)
             shutil.copy('settings.json', save_path + 'settings.json')
             success = 0
+            logging.info('Save path: %s' % save_path)
+            logging.info('parameters: %s' % json.dumps(my_data))
 
             for i in range(1, n + 1):
                 seed = math.floor(random.random() * 4294967296)
                 my_data["parameters"]["seed"] = seed
                 filename = "ID-%04d-SEED-%d.png" % (i, seed)
-                progress.config(text="%s%s (%d/%d)" % (
-                    save_path, filename, i, n))
+                now_at = "%s%s (%d/%d)" % (save_path, filename, i, n)
+                progress.config(text=now_at)
+                logging.info(now_at)
 
                 # get the file
                 r = requests.post(url=URL, headers=my_headers, json=my_data)
-                # print(save_path + filename)
                 if r.status_code == requests.codes.created:
                     with open(save_path + filename, 'wb') as out_file:
                         data = r.text.replace(
@@ -124,13 +128,13 @@ def gui(access_key):
                         out_file.write(base64.b64decode(data))
                     success += 1
                 else:
-                    print(r.text)
+                    logging.warning("下載失敗，錯誤訊息：%s" % r.text)
                     progress.config(text="%s%s (%d/%d) 下載失敗。" % (
                         save_path, filename, i, n))
 
             progress.config(text="%d張圖片下載完成。" % success)
         except Exception as e:
-            print(e)
+            logging.exception(e)
             progress.config(text="錯誤發生。下載失敗。")
 
     def download(num):
@@ -226,8 +230,17 @@ if __name__ == "__main__":
         if not os.path.isdir('download'):
             os.mkdir('download')
 
+        # log setup
+        logging.basicConfig(filename='nips.log', level=logging.DEBUG,
+                            encoding="utf-8",
+                            format="%(asctime)s;\t%(levelname)s;\t%(message)s",
+                            datefmt="%Y-%m-%d %H:%M:%S")
+        logging.info("Launch app.")
+
     except Exception as e:
-        print(e)
+        logging.exception(e)
         key = ""
 
     gui(key)
+
+    logging.info("Leave app.")
