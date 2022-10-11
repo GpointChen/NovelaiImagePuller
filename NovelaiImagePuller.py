@@ -174,14 +174,14 @@ def gui(access_key):
         fi.pack(anchor="w", padx=5, pady=1)
 
     tk.Label(frames[0], text="關鍵字", width=10).grid(column=0, row=0)
-    input_entry = tk.Text(frames[0], width=55, height=4, font=('Arial'))
+    input_entry = tk.Text(frames[0], width=64, height=4, font=('Arial'))
     input_entry.insert(1.0, config['input'])
     input_entry.grid(column=1, row=0, sticky='ew')
     tk.Button(frames[0], text="清除",
               command=lambda: input_clear(input_entry)).grid(column=2, row=0)
 
     tk.Label(frames[0], text="黑名單", width=10).grid(column=0, row=1)
-    uc_entry = tk.Text(frames[0], width=55, height=2, font=('Arial', 10))
+    uc_entry = tk.Text(frames[0], width=64, height=2, font=('Arial', 10))
     uc_entry.insert(1.0, config['uc'])
     uc_entry.grid(column=1, row=1, sticky='ew')
     tk.Button(frames[0], text="清除",
@@ -238,7 +238,7 @@ def gui(access_key):
                   num=int(num_entry.get()))).start()).pack(side=tk.LEFT)
     tk.Button(frames[3], text="開啟圖片", width=10,
               command=open_folder).pack(side=tk.LEFT)
-    progress = tk.Label(frames[3], text='', width=50, anchor='w')
+    progress = tk.Label(frames[3], text='', width=60, anchor='w')
     progress.pack(side=tk.LEFT)
 
     window.eval('tk::PlaceWindow . center')
