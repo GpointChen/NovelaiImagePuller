@@ -38,6 +38,7 @@ models = {
 samplers = ['k_euler_ancestral', 'k_euler', 'k_lms', 'plms', 'ddim']
 URL = "https://api.novelai.net/ai/generate-image"
 key = ""
+save_path = "download\\"
 
 
 def gui(access_key):
@@ -60,6 +61,7 @@ def gui(access_key):
             key = key_entry.get()
             with open('key.json', 'w', encoding='UTF-8') as f:
                 json.dump({"key": key}, f, indent=4)
+            logging.info("Config saved in settings.json.")
 
         except Exception as e:
             logging.exception(e)
@@ -67,7 +69,7 @@ def gui(access_key):
             return None
 
     def process(n):
-        global key, my_config
+        global key, my_config, save_path
         if not key:
             progress.config(text="沒有驗證金鑰。下載失敗。")
             logging.warning("No key detected. Please check your key.json.")
@@ -144,6 +146,9 @@ def gui(access_key):
     def input_clear(textblock):
         textblock.delete(1.0, tk.END)
 
+    def open_folder():
+        os.startfile(os.path.realpath(save_path))
+
     with open('settings.json') as f:
         config = json.load(f)
 
@@ -214,6 +219,8 @@ def gui(access_key):
     tk.Button(frames[3], text="產生圖片", width=10,
               command=lambda: threading.Thread(target=lambda: download(
                   num=int(num_entry.get()))).start()).pack(side=tk.LEFT)
+    tk.Button(frames[3], text="開啟圖片", width=10,
+              command=open_folder).pack(side=tk.LEFT)
     progress = tk.Label(frames[3], text='')
     progress.pack(side=tk.LEFT)
 
