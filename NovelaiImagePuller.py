@@ -47,12 +47,12 @@ def gui(access_key):
         try:
             my_config = {
                 "input": input_entry.get("1.0", 'end-1c'),
-                "number": int(num_entry.get()),
+                "number": int(num_var.get()),
                 "model": model_var.get(),
                 "resolution": resol_var.get(),
-                "scale": int(scale_entry.get()),
+                "scale": int(scale_var.get()),
                 "sampler": sampler_var.get(),
-                "steps": int(steps_entry.get()),
+                "steps": int(steps_var.get()),
                 "ucPreset": 0,
                 "uc": uc_entry.get("1.0", 'end-1c')
             }
@@ -130,7 +130,7 @@ def gui(access_key):
                         out_file.write(base64.b64decode(data))
                     success += 1
                 else:
-                    logging.warning("下載失敗，錯誤訊息：%s" % r.text)
+                    logging.warning("Download failed: %s" % r.text)
                     progress.config(text="%s%s (%d/%d) 下載失敗。" % (
                         save_path, filename, i, n))
 
@@ -148,6 +148,20 @@ def gui(access_key):
 
     def open_folder():
         os.startfile(os.path.realpath(save_path))
+
+    def check_num(var, lower, upper):
+        try:
+            a = int(var.get())
+            print(a)
+        except Exception as e:
+            logging.exception(e)
+            var.set('11')
+        if a < lower:
+            var.set(str(lower))
+        elif a > upper:
+            var.set(str(upper))
+        print("before return")
+        return True
 
     with open('settings.json') as f:
         config = json.load(f)
@@ -174,8 +188,9 @@ def gui(access_key):
               command=lambda: input_clear(uc_entry)).grid(column=2, row=1)
 
     tk.Label(frames[2], text="數量", width=10).grid(column=0, row=0)
-    num_entry = tk.Entry(frames[2])
-    num_entry.insert(0, config['number'])
+    num_var = tk.StringVar(frames[2], config['number'])
+    num_entry = tk.Entry(frames[2], textvariable=num_var, width=25)
+    num_entry.bind("<FocusOut>", lambda x: check_num(num_var, 1, 1000))
     num_entry.grid(column=1, row=0)
 
     tk.Label(frames[2], text="解析度", width=10).grid(column=0, row=1)
@@ -193,13 +208,15 @@ def gui(access_key):
     model_entry.grid(column=3, row=1)
 
     tk.Label(frames[2], text="Steps", width=10).grid(column=0, row=2)
-    steps_entry = tk.Entry(frames[2], width=25)
-    steps_entry.insert(0, config['steps'])
+    steps_var = tk.StringVar(frames[2], config['steps'])
+    steps_entry = tk.Entry(frames[2], textvariable=steps_var, width=25)
+    steps_entry.bind("<FocusOut>", lambda x: check_num(steps_var, 2, 28))
     steps_entry.grid(column=1, row=2)
 
     tk.Label(frames[2], text="Scale", width=10).grid(column=2, row=2)
-    scale_entry = tk.Entry(frames[2], width=25)
-    scale_entry.insert(0, config['scale'])
+    scale_var = tk.StringVar(frames[2], config['scale'])
+    scale_entry = tk.Entry(frames[2], textvariable=scale_var, width=25)
+    steps_entry.bind("<FocusOut>", lambda x: check_num(steps_var, 2, 100))
     scale_entry.grid(column=3, row=2)
 
     tk.Label(frames[2], text="進階：取樣", width=10).grid(column=0, row=3)
@@ -231,8 +248,7 @@ def gui(access_key):
 if __name__ == "__main__":
     try:
         with open('key.json', 'r', encoding='UTF-8') as f:
-            auth = json.load(f)
-            key = auth['key']
+            key = json.load(f)['key']
 
         if not os.path.isdir('download'):
             os.mkdir('download')

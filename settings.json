@@ -1,11 +1,11 @@
 {
-    "input": "minato aqua, masterpiece, hololive, large breasts, wedding dress,",
+    "input": "masterpiece,",
     "number": 3,
     "model": "NAI Diffusion Anime (Curated)",
-    "resolution": "Landscape (Normal): 768x512",
+    "resolution": "Portrait (Normal): 512x768",
     "scale": 12,
     "sampler": "k_euler_ancestral",
-    "steps": 28,
+    "steps": 2,
     "ucPreset": 0,
     "uc": "lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry"
 }
