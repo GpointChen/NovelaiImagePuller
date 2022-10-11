@@ -105,7 +105,7 @@ def gui(access_key):
             if not os.path.isdir(save_path):
                 os.mkdir(save_path)
             shutil.copy('settings.json', save_path + 'settings.json')
-            # print("Config:", my_data)
+            success = 0
 
             for i in range(1, n + 1):
                 seed = math.floor(random.random() * 4294967296)
@@ -122,10 +122,13 @@ def gui(access_key):
                         data = r.text.replace(
                             "event: newImage\nid: 1\ndata:", "")
                         out_file.write(base64.b64decode(data))
+                    success += 1
                 else:
                     print(r.text)
+                    progress.config(text="%s%s (%d/%d) 下載失敗。" % (
+                        save_path, filename, i, n))
 
-            progress.config(text="%d張圖片下載完成。" % n)
+            progress.config(text="%d張圖片下載完成。" % success)
         except Exception as e:
             print(e)
             progress.config(text="錯誤發生。下載失敗。")
@@ -219,6 +222,10 @@ if __name__ == "__main__":
         with open('key.json', 'r', encoding='UTF-8') as f:
             auth = json.load(f)
             key = auth['key']
+
+        if not os.path.isdir('download'):
+            os.mkdir('download')
+
     except Exception as e:
         print(e)
         key = ""
