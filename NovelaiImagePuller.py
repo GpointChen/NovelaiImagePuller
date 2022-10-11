@@ -152,7 +152,6 @@ def gui():
     def check_num(var, lower, upper):
         try:
             a = int(var.get())
-            print(a)
         except Exception as e:
             logging.exception(e)
             var.set('11')
@@ -160,13 +159,13 @@ def gui():
             var.set(str(lower))
         elif a > upper:
             var.set(str(upper))
-        print("before return")
         return True
 
+    global key
     with open('settings.json') as f:
         config = json.load(f)
-
-    global key
+    with open('key.json') as f:
+        key = json.load(f)['key']
     window = tk.Tk()
     window.title('NovelAI Image Piliang Spawner')
 
@@ -217,7 +216,7 @@ def gui():
     tk.Label(frames[2], text="Scale", width=10).grid(column=2, row=2)
     scale_var = tk.StringVar(frames[2], config['scale'])
     scale_entry = tk.Entry(frames[2], textvariable=scale_var, width=25)
-    steps_entry.bind("<FocusOut>", lambda x: check_num(steps_var, 2, 100))
+    scale_entry.bind("<FocusOut>", lambda x: check_num(scale_var, 2, 100))
     scale_entry.grid(column=3, row=2)
 
     tk.Label(frames[2], text="進階：取樣", width=10).grid(column=0, row=3)
