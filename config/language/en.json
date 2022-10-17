@@ -1,0 +1,21 @@
+{
+    "after_download": "%d images downloaded.",
+    "button_clear": "Clear",
+    "button_download": "Get Images",
+    "button_open": "Open Folder",
+    "button_save": "Save Settings",
+    "error_download": "Error: Download failed.",
+    "error_file": "%s (%d/%d) download failed.",
+    "error_key": "Error: No access key.",
+    "error_save": "Error: Save failed.",
+    "label_amount": "Amount",
+    "label_key": "Access Key",
+    "label_language": "Language",
+    "label_model": "Model",
+    "label_prompt": "Prompt",
+    "label_resolution": "Resolution",
+    "label_sampler": "Sampler",
+    "label_scale": "Scale",
+    "label_steps": "Steps",
+    "label_uc": "Undesired"
+}

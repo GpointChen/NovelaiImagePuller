@@ -1,0 +1,21 @@
+{
+    "after_download": "%d張圖片下載完成。",
+    "button_clear": "清除",
+    "button_download": "產生圖片",
+    "button_open": "開啟圖片",
+    "button_save": "儲存設定",
+    "error_download": "錯誤發生。下載失敗。",
+    "error_file": "%s (%d/%d) 下載失敗。",
+    "error_key": "沒有驗證金鑰。下載失敗。",
+    "error_save": "錯誤發生。儲存失敗。",
+    "label_amount": "數量",
+    "label_key": "認證金鑰",
+    "label_language": "語言",
+    "label_model": "模型",
+    "label_prompt": "關鍵字",
+    "label_resolution": "解析度",
+    "label_sampler": "進階：取樣",
+    "label_scale": "Scale",
+    "label_steps": "Steps",
+    "label_uc": "黑名單"
+}

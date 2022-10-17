@@ -1,0 +1,12 @@
+{
+    "input": "masterpiece",
+    "number": 3,
+    "model": "NAI Diffusion Anime (Curated)",
+    "resolution": "Portrait (Normal): 512x768",
+    "scale": 12,
+    "sampler": "k_euler_ancestral",
+    "steps": 28,
+    "ucPreset": 0,
+    "uc": "lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry",
+    "language": "zh_TW"
+}
